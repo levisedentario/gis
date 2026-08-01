@@ -140,6 +140,10 @@ $defaultLon = 123.813120;
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 140px;
         }
 
         .forecast-item strong {
@@ -251,7 +255,9 @@ $defaultLon = 123.813120;
                 <div class="temp" id="currentTemp">--°C</div>
                 <div id="condition">Fetching data...</div>
                 <div class="meta">
+                    <span id="currentWeather">Weather: --</span>
                     <span id="currentRain">Rain: --</span>
+                    <span id="currentCloud">Cloud cover: --</span>
                     <span id="currentTime">Time: --</span>
                 </div>
             </div>
@@ -275,7 +281,9 @@ $defaultLon = 123.813120;
         const locationLabelEl = document.getElementById('locationLabel');
         const currentTempEl = document.getElementById('currentTemp');
         const conditionEl = document.getElementById('condition');
+        const currentWeatherEl = document.getElementById('currentWeather');
         const currentRainEl = document.getElementById('currentRain');
+        const currentCloudEl = document.getElementById('currentCloud');
         const currentTimeEl = document.getElementById('currentTime');
         const forecastListEl = document.getElementById('forecastList');
         const rainSummaryEl = document.getElementById('rainSummary');
@@ -326,7 +334,7 @@ $defaultLon = 123.813120;
             statusEl.textContent = 'Fetching weather data...';
 
             try {
-                // const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=rain,precipitation&timezone=auto`;
+                // const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,rain,precipitation,weather_code,cloud_cover&hourly=temperature_2m,precipitation,weather_code,cloud_cover&timezone=auto`;
                 const response = await fetch(url);
 
                 if (!response.ok) {
@@ -335,23 +343,41 @@ $defaultLon = 123.813120;
 
                 const data = await response.json();
                 const current = data.current;
+                const hourly = data.hourly || {};
+                const weatherInfo = getWeatherLabel(current.weather_code);
+                const cloudCover = Math.round(current.cloud_cover ?? 0);
+                const temperature = Math.round(current.temperature_2m ?? 0);
 
                 const isDefaultLocation = Math.abs(lat - 10.244704) < 0.0001 && Math.abs(lon - 123.813120) < 0.0001;
                 locationLabelEl.textContent = isDefaultLocation ? 'Tungkil, Minglanilla, Cebu • 10.244704, 123.813120' : `Location: ${lat}, ${lon}`;
-                currentTempEl.textContent = 'Current';
-                conditionEl.innerHTML = '🌧 Rain & precipitation';
+                currentTempEl.textContent = `${temperature}°C`;
+                conditionEl.innerHTML = `${weatherInfo.icon} ${weatherInfo.label}`;
+                currentWeatherEl.textContent = `Weather: ${weatherInfo.icon} ${weatherInfo.label}`;
                 currentRainEl.textContent = `Rain: ${Math.round(current.rain * 10) / 10} mm`;
+                currentCloudEl.textContent = `Cloud cover: ${cloudCover}%`;
                 currentTimeEl.textContent = `Time: ${formatTime(current.time)}`;
 
-                forecastListEl.innerHTML = `
-                    <div class="forecast-item">
-                        <strong>Current Status</strong>
-                        <div class="muted">Rain: ${Math.round(current.rain * 10) / 10} mm</div>
-                        <div class="muted">Precipitation: ${Math.round(current.precipitation * 10) / 10}</div>
-                    </div>
-                `;
+                const forecastCards = (hourly.time || []).slice(0, 6).map((time, index) => {
+                    const hourWeatherCode = hourly.weather_code?.[index];
+                    const hourWeather = getWeatherLabel(hourWeatherCode);
+                    const hourRain = hourly.precipitation?.[index] ?? 0;
+                    const hourCloudCover = Math.round(hourly.cloud_cover?.[index] ?? 0);
+                    const hourTemp = Math.round(hourly.temperature_2m?.[index] ?? 0);
 
-                rainSummaryEl.innerHTML = `Rain: ${Math.round(current.rain * 10) / 10} mm • Precipitation: ${Math.round(current.precipitation * 10) / 10}`;
+                    return `
+                        <div class="forecast-item">
+                            <strong>${formatTime(time)}</strong>
+                            <div class="muted">${hourWeather.icon} ${hourWeather.label}</div>
+                            <div class="muted">${hourTemp}°C</div>
+                            <div class="muted">Rain: ${Math.round(hourRain * 10) / 10} mm</div>
+                            <div class="muted">Cloud cover: ${hourCloudCover}%</div>
+                        </div>
+                    `;
+                }).join('');
+
+                forecastListEl.innerHTML = forecastCards;
+
+                rainSummaryEl.innerHTML = `Weather: ${weatherInfo.icon} ${weatherInfo.label} • Rain: ${Math.round(current.rain * 10) / 10} mm • Cloud cover: ${cloudCover}%`;
                 rainChartEl.innerHTML = `
                     <div class="rain-bars">
                         <div class="rain-bar-wrap">

@@ -179,20 +179,34 @@
   .reveal{opacity:0; transform:translateY(22px); transition:opacity 0.7s ease, transform 0.7s ease;}
   .reveal.in{opacity:1; transform:translateY(0);}
 
-  /* ---------- RATIONALE ---------- */
-  .rationale-grid{
-    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:start;
-  }
-  @media (max-width:900px){.rationale-grid{grid-template-columns:1fr;}}
-  .rationale-grid p{color:var(--ink-soft); font-size:1.06rem;}
-  .rationale-grid p + p{margin-top:18px;}
-  .stat-stack{display:flex; flex-direction:column; gap:0;}
-  .stat{
-    padding:26px 0; border-bottom:1px solid var(--line);
-  }
-  .stat:first-child{padding-top:0;}
-  .stat .num{font-family:'Fraunces', serif; font-weight:700; font-size:2.6rem; color:var(--water-deep); line-height:1;}
-  .stat .lab{font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-top:8px;}
+  .weather-shell{display:flex; justify-content:center;}
+  .weather-card{width:100%; background:linear-gradient(135deg, rgba(255,255,255,0.94), rgba(234,240,237,0.96)); border:1px solid var(--line); border-radius:24px; padding:28px; box-shadow:0 24px 60px rgba(14,36,48,0.08);}
+  .weather-header{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:18px;}
+  .weather-badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(46,111,158,0.12); color:var(--water-deep); font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px;}
+  .weather-header h3{font-size:1.45rem; margin-bottom:6px;}
+  .weather-header p{margin:0; color:var(--ink-soft);}
+  .weather-controls{display:flex; flex-wrap:wrap; gap:10px;}
+  .weather-input{border:1px solid var(--line); border-radius:12px; padding:10px 12px; min-width:130px; font-family:'Source Serif 4', serif; color:var(--ink); background:rgba(255,255,255,0.8);}
+  .weather-button{padding:10px 16px; border:none; border-radius:12px; background:linear-gradient(135deg, var(--water), var(--flood)); color:white; font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; cursor:pointer;}
+  .weather-button:hover{filter:brightness(1.04);}
+  .weather-status{padding:12px 14px; border-radius:12px; background:rgba(14,36,48,0.05); color:var(--ink-soft); margin-bottom:16px; font-size:0.96rem;}
+  .weather-current{display:grid; grid-template-columns:1.1fr 0.9fr; gap:16px; margin-bottom:16px;}
+  .weather-panel{background:rgba(255,255,255,0.76); border:1px solid var(--line); border-radius:18px; padding:16px;}
+  .weather-label{font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--water-deep); margin-bottom:8px;}
+  .weather-temp{font-family:'Fraunces', serif; font-size:2.2rem; font-weight:700; color:var(--ink); margin:10px 0 8px;}
+  .weather-meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;}
+  .weather-pill{font-size:0.86rem; color:var(--ink-soft); background:rgba(14,36,48,0.05); padding:7px 10px; border-radius:999px;}
+  .weather-grid{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px;}
+  .weather-item{background:rgba(14,36,48,0.04); border:1px solid var(--line); border-radius:12px; padding:10px; min-height:130px;}
+  .weather-item strong{display:block; margin-bottom:6px; color:var(--ink); font-family:'JetBrains Mono', monospace; font-size:12px;}
+  .weather-item .muted{color:var(--ink-soft); font-size:0.9rem; line-height:1.5;}
+  .weather-analysis{display:grid; gap:10px;}
+  .weather-summary{color:var(--ink-soft); font-size:0.95rem;}
+  .weather-bars{display:grid; grid-template-columns:repeat(6,1fr); gap:8px; align-items:end; min-height:110px; margin-top:8px;}
+  .weather-bar-wrap{display:flex; flex-direction:column; align-items:center; gap:6px; font-size:0.78rem; color:var(--ink-soft);}
+  .weather-bar{width:100%; min-height:6px; border-radius:8px 8px 4px 4px; background:linear-gradient(180deg, var(--water), var(--flood));}
+  @media (max-width:900px){.weather-current{grid-template-columns:1fr;}}
+  @media (max-width:680px){.weather-card{padding:20px;} .weather-controls{width:100%;} .weather-input{flex:1 1 140px;} .weather-grid{grid-template-columns:1fr;}}
 
   /* ---------- FACTORS ---------- */
   .factors-band{background:var(--ink); color:var(--paper);}
@@ -331,10 +345,8 @@
   </a>
   <div class="navlinks">
     
-    <a href="#rationale">Rationale</a>
     <a href="#factors">Factors</a>
     <a href="#site">Site</a>
-    <a href="#impact">Impact</a>
     <a href="mapping.php">Mapping</a>
     
   </div>
@@ -366,27 +378,6 @@
 
   <div class="scroll-cue"><span>scroll</span><span class="line"></span></div>
 </header>
-
-<section id="rationale">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="tag">01 — Rationale</span>
-      <h2>Flood management here is reactive because there's no localized tool to see it coming.</h2>
-    </div>
-    <div class="rationale-grid">
-      <div class="reveal">
-        <p>Moderate to heavy rainfall regularly leaves road surfaces and low-lying stretches of Minglanilla underwater, cutting off routes and disrupting daily life. Denser construction and more paved surface area mean less ground for water to soak into, so runoff keeps intensifying.</p>
-        <p>Periodic inspections haven't kept pace. What's missing is a way to combine hydrology, hydraulic engineering, and spatial data into one localized decision-support tool — one that flags which road segments are most likely to flood, before the next storm arrives.</p>
-        <p>This study builds that tool: a computational framework that merges the Rational Method and Manning's Equation with spatio-temporal GIS analysis to classify flood susceptibility across Subdivision Phase 3, Barangay Tungkil.</p>
-      </div>
-      <div class="stat-stack reveal">
-        <div class="stat"><div class="num">15</div><div class="lab">causative sub-variables assessed per road segment</div></div>
-        <div class="stat"><div class="num">3</div><div class="lab">core research hypotheses tested against flood records</div></div>
-        <div class="stat"><div class="num">1</div><div class="lab">barangay-scale decision-support map, built for MEO &amp; MDRRMO use</div></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="factors-band" id="factors">
   <div class="wrap">
@@ -434,7 +425,7 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="tag">04 — Study Site</span>
-      <h2>Subdivision Phase 3, Barangay Tungkil</h2>
+      <h2>Deca Homes, Barangay Tungkil</h2>
       <p>A residential subdivision within Minglanilla, Cebu, selected for its recurring street-flooding reports and mixed drainage infrastructure.</p>
     </div>
     <div class="site-grid">
@@ -474,65 +465,175 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="tag">05 — Weather Monitoring</span>
-      <h2>Weather monitoring section template</h2>
-      <p>This area will host live weather updates, rainfall reports, and alert summaries for the study site.</p>
+      <h2>Live weather conditions for the Tungkil study site</h2>
+      <p>Check current conditions, short-term rainfall outlook, and the next few hours of forecast data around Subdivision Phase 3.</p>
     </div>
-    <div class="impact-grid reveal">
-      <div class="impact-card">
-        <div class="ic-mono">Live Data</div>
-        <h4>Rainfall Gauge</h4>
-        <p>Insert current rainfall intensity, station status, and recent readings here.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">Forecast</div>
-        <h4>Weather Outlook</h4>
-        <p>Place forecast cards, warning levels, or advisory messages here.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">Alerts</div>
-        <h4>Monitoring Notes</h4>
-        <p>Use this block for threshold warnings, maintenance notices, or incident summaries.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">Timeline</div>
-        <h4>Recent Events</h4>
-        <p>Display hourly or daily weather events and flood-related observations.</p>
+    <div class="weather-shell reveal">
+      <div class="weather-card">
+        <div class="weather-header">
+          <div>
+            <div class="weather-badge">📍 Tungkil, Minglanilla, Cebu</div>
+            <h3>Weather Forecast</h3>
+            <p>Realtime conditions for your selected location.</p>
+          </div>
+          <div class="weather-controls">
+            <input id="lat" class="weather-input" type="number" step="0.0001" value="10.244704" placeholder="Latitude">
+            <input id="lon" class="weather-input" type="number" step="0.0001" value="123.813120" placeholder="Longitude">
+            <button id="loadBtn" class="weather-button">Get Weather</button>
+          </div>
+        </div>
+
+        <div id="status" class="weather-status">Loading forecast…</div>
+
+        <div class="weather-current">
+          <div class="weather-panel">
+            <div class="weather-label">Current conditions</div>
+            <div class="weather-temp" id="currentTemp">--°C</div>
+            <div id="condition">Fetching data...</div>
+            <div class="weather-meta">
+              <span class="weather-pill" id="currentWeather">Weather: --</span>
+              <span class="weather-pill" id="currentRain">Rain: --</span>
+              <span class="weather-pill" id="currentCloud">Cloud cover: --</span>
+              <span class="weather-pill" id="currentTime">Time: --</span>
+            </div>
+          </div>
+          <div class="weather-panel">
+            <div class="weather-label">Next hours</div>
+            <div class="weather-grid" id="forecastList"></div>
+          </div>
+        </div>
+
+        <div class="weather-panel weather-analysis">
+          <div class="weather-label">Rain analysis</div>
+          <div id="rainSummary" class="weather-summary">Preparing rain trend...</div>
+          <div class="weather-bars" id="rainChart"></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="impact">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="tag">06 — Significance</span>
-      <h2>Built to be used, not just published.</h2>
-      <p>The output is a localized decision-support map, aimed squarely at the offices that plan and fund flood mitigation at the barangay level.</p>
-    </div>
-    <div class="impact-grid reveal">
-      <div class="impact-card">
-        <div class="ic-mono">MEO</div>
-        <h4>Prioritize infrastructure</h4>
-        <p>Rank drainage upgrades and repairs by segment-level risk instead of routine rotation.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">MDRRMO</div>
-        <h4>Plan ahead of storms</h4>
-        <p>Pre-position response resources toward segments flagged high-susceptibility.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">Barangay Tungkil</div>
-        <h4>Target local mitigation</h4>
-        <p>Direct clearing, drainage maintenance, and community advisories where they matter most.</p>
-      </div>
-      <div class="impact-card">
-        <div class="ic-mono">Residents</div>
-        <h4>Know the routes at risk</h4>
-        <p>Understand which roads are flood-prone under different rainfall scenarios.</p>
-      </div>
-    </div>
-  </div>
-</section>
+<script>
+  const weatherCodeMap = {
+    0: { label: 'Clear sky', icon: '☀️' },
+    1: { label: 'Mainly clear', icon: '🌤️' },
+    2: { label: 'Partly cloudy', icon: '⛅' },
+    3: { label: 'Overcast', icon: '☁️' },
+    45: { label: 'Fog', icon: '🌫️' },
+    48: { label: 'Rime fog', icon: '🌫️' },
+    51: { label: 'Light drizzle', icon: '🌦️' },
+    53: { label: 'Moderate drizzle', icon: '🌦️' },
+    55: { label: 'Dense drizzle', icon: '🌧️' },
+    61: { label: 'Slight rain', icon: '🌧️' },
+    63: { label: 'Moderate rain', icon: '🌧️' },
+    65: { label: 'Heavy rain', icon: '⛈️' },
+    71: { label: 'Slight snow', icon: '🌨️' },
+    73: { label: 'Moderate snow', icon: '❄️' },
+    75: { label: 'Heavy snow', icon: '❄️' },
+    95: { label: 'Thunderstorm', icon: '⛈️' },
+    96: { label: 'Thunderstorm with hail', icon: '⛈️' },
+    99: { label: 'Severe hail', icon: '⛈️' }
+  };
+
+  function formatTime(value) {
+    const date = new Date(value);
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function getWeatherLabel(code) {
+    return weatherCodeMap[code] || { label: 'Unknown', icon: '🌈' };
+  }
+
+  async function loadWeather() {
+    const lat = document.getElementById('lat').value;
+    const lon = document.getElementById('lon').value;
+    const statusEl = document.getElementById('status');
+    const locationLabelEl = document.getElementById('currentTemp');
+    const currentTempEl = document.getElementById('currentTemp');
+    const conditionEl = document.getElementById('condition');
+    const currentWeatherEl = document.getElementById('currentWeather');
+    const currentRainEl = document.getElementById('currentRain');
+    const currentCloudEl = document.getElementById('currentCloud');
+    const currentTimeEl = document.getElementById('currentTime');
+    const forecastListEl = document.getElementById('forecastList');
+    const rainSummaryEl = document.getElementById('rainSummary');
+    const rainChartEl = document.getElementById('rainChart');
+
+    if (!lat || !lon) {
+      statusEl.textContent = 'Please enter both latitude and longitude.';
+      return;
+    }
+
+    statusEl.textContent = 'Fetching weather data...';
+
+    try {
+      // const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,rain,weather_code,cloud_cover&hourly=temperature_2m,precipitation,weather_code,cloud_cover&timezone=auto`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error('Unable to fetch weather data.');
+      }
+
+      const data = await response.json();
+      const current = data.current;
+      const hourly = data.hourly || {};
+      const weatherInfo = getWeatherLabel(current.weather_code);
+      const cloudCover = Math.round(current.cloud_cover ?? 0);
+      const temperature = Math.round(current.temperature_2m ?? 0);
+      const rainAmount = Math.round((current.rain ?? 0) * 10) / 10;
+
+      currentTempEl.textContent = `${temperature}°C`;
+      conditionEl.innerHTML = `${weatherInfo.icon} ${weatherInfo.label}`;
+      currentWeatherEl.textContent = `Weather: ${weatherInfo.icon} ${weatherInfo.label}`;
+      currentRainEl.textContent = `Rain: ${rainAmount} mm`;
+      currentCloudEl.textContent = `Cloud cover: ${cloudCover}%`;
+      currentTimeEl.textContent = `Time: ${formatTime(current.time)}`;
+
+      const forecastCards = (hourly.time || []).slice(0, 6).map((time, index) => {
+        const hourWeatherCode = hourly.weather_code?.[index];
+        const hourWeather = getWeatherLabel(hourWeatherCode);
+        const hourRain = hourly.precipitation?.[index] ?? 0;
+        const hourCloudCover = Math.round(hourly.cloud_cover?.[index] ?? 0);
+        const hourTemp = Math.round(hourly.temperature_2m?.[index] ?? 0);
+
+        return `
+          <div class="weather-item">
+            <strong>${formatTime(time)}</strong>
+            <div class="muted">${hourWeather.icon} ${hourWeather.label}</div>
+            <div class="muted">${hourTemp}°C</div>
+            <div class="muted">Rain: ${Math.round(hourRain * 10) / 10} mm</div>
+            <div class="muted">Cloud: ${hourCloudCover}%</div>
+          </div>
+        `;
+      }).join('');
+
+      forecastListEl.innerHTML = forecastCards;
+
+      const rainValues = (hourly.precipitation || []).slice(0, 6);
+      const maxRain = Math.max(...rainValues, 0);
+      rainChartEl.innerHTML = rainValues.map((value, index) => {
+        const height = maxRain > 0 ? Math.max(12, Math.round((value / maxRain) * 100)) : 12;
+        return `
+          <div class="weather-bar-wrap">
+            <div class="weather-bar" style="height:${height}%"></div>
+            <span>${index === 0 ? 'Now' : `+${index}`}</span>
+          </div>
+        `;
+      }).join('');
+
+      rainSummaryEl.innerHTML = `Weather: ${weatherInfo.icon} ${weatherInfo.label} • Rain: ${rainAmount} mm • Cloud cover: ${cloudCover}%`;
+      statusEl.textContent = 'Weather data loaded successfully.';
+    } catch (error) {
+      statusEl.textContent = error.message || 'Something went wrong.';
+      forecastListEl.innerHTML = '';
+      rainSummaryEl.textContent = 'Rain analysis unavailable.';
+      rainChartEl.innerHTML = '';
+    }
+  }
+
+  document.getElementById('loadBtn').addEventListener('click', loadWeather);
+  window.addEventListener('DOMContentLoaded', loadWeather);
+</script>
 
 <footer id="team">
   <div class="wrap">
