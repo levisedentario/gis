@@ -80,11 +80,12 @@
       Tungkil GIS
     </a>
     <div class="nav-links">
-      <a href="index.php#rationale">Rationale</a>
-      <a href="index.php#factors">Factors</a>
-      <a href="index.php#site">Site</a>
-      <a href="index.php#impact">Impact</a>
-      <a href="mapping.php">Mapping</a>
+  
+    <a href="index.php#hero">Home</a>
+    <a href="index.php#factors">Factors</a>
+    <a href="index.php#site">Area</a>
+    <a href="mapping.php">Mapping</a>
+
     </div>
   </nav>
 
@@ -97,28 +98,10 @@
       <?php
       $maps = [
         [
-          'title' => 'Border Map',
+          'title' => 'QGIS Mapping',
           'description' => 'Simple reference view with a clean border layout and the study area context.',
-          'link' => 'qgis/border/index.html',
-          'button' => 'Open Border Map'
-        ],
-        [
-          'title' => 'Esri White',
-          'description' => 'Light basemap styling for clearer overlay comparison and presentation.',
-          'link' => 'qgis/esri_white/index.html',
-          'button' => 'Open Esri White'
-        ],
-        [
-          'title' => 'Hybrid',
-          'description' => 'Mixed visual style that combines road, terrain, and satellite context.',
-          'link' => 'qgis/hybrid/index.html',
-          'button' => 'Open Hybrid Map'
-        ],
-        [
-          'title' => 'Map Option 04',
-          'description' => 'Replace this title, description, and link when you add a new mapping view.',
-          'link' => '#',
-          'button' => 'Open Map Option 04'
+          'link' => 'qgis/MappingDeca/index.php',
+          'button' => 'Open Mapping Map'
         ],
         [
           'title' => 'Map Option 05',

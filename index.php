@@ -345,9 +345,12 @@
   </a>
   <div class="navlinks">
     
+  
+    <a href="#hero">Home</a>
     <a href="#factors">Factors</a>
-    <a href="#site">Site</a>
+    <a href="#site">Area</a>
     <a href="mapping.php">Mapping</a>
+    <a href="subscribe.php">Get Notified</a>
     
   </div>
 </nav>
@@ -363,7 +366,7 @@
     </svg>
   </div>
 
-  <div class="hero-inner">
+  <div class="hero-inner" id="hero">
     <div class="eyebrow"><span class="dot"></span> Mathematics &amp; Computational Science · Research Study</div>
     <h1>Predicting where <em>Minglanilla's streets flood</em> before the rain does.</h1>
     <p class="hero-sub">A GIS-based computational framework that scores every road segment in Subdivision Phase 3, Barangay Tungkil, against six causative factor groups — turning drainage inspections into a repeatable, mappable index.</p>
@@ -514,34 +517,9 @@
 </section>
 
 <script>
-  const weatherCodeMap = {
-    0: { label: 'Clear sky', icon: '☀️' },
-    1: { label: 'Mainly clear', icon: '🌤️' },
-    2: { label: 'Partly cloudy', icon: '⛅' },
-    3: { label: 'Overcast', icon: '☁️' },
-    45: { label: 'Fog', icon: '🌫️' },
-    48: { label: 'Rime fog', icon: '🌫️' },
-    51: { label: 'Light drizzle', icon: '🌦️' },
-    53: { label: 'Moderate drizzle', icon: '🌦️' },
-    55: { label: 'Dense drizzle', icon: '🌧️' },
-    61: { label: 'Slight rain', icon: '🌧️' },
-    63: { label: 'Moderate rain', icon: '🌧️' },
-    65: { label: 'Heavy rain', icon: '⛈️' },
-    71: { label: 'Slight snow', icon: '🌨️' },
-    73: { label: 'Moderate snow', icon: '❄️' },
-    75: { label: 'Heavy snow', icon: '❄️' },
-    95: { label: 'Thunderstorm', icon: '⛈️' },
-    96: { label: 'Thunderstorm with hail', icon: '⛈️' },
-    99: { label: 'Severe hail', icon: '⛈️' }
-  };
-
   function formatTime(value) {
     const date = new Date(value);
     return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-  }
-
-  function getWeatherLabel(code) {
-    return weatherCodeMap[code] || { label: 'Unknown', icon: '🌈' };
   }
 
   async function loadWeather() {
@@ -567,7 +545,7 @@
     statusEl.textContent = 'Fetching weather data...';
 
     try {
-      // const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,rain,weather_code,cloud_cover&hourly=temperature_2m,precipitation,weather_code,cloud_cover&timezone=auto`;
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=rain,precipitation&hourly=precipitation&timezone=auto`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -577,32 +555,23 @@
       const data = await response.json();
       const current = data.current;
       const hourly = data.hourly || {};
-      const weatherInfo = getWeatherLabel(current.weather_code);
-      const cloudCover = Math.round(current.cloud_cover ?? 0);
-      const temperature = Math.round(current.temperature_2m ?? 0);
       const rainAmount = Math.round((current.rain ?? 0) * 10) / 10;
+      const precipitationAmount = Math.round((current.precipitation ?? 0) * 10) / 10;
 
-      currentTempEl.textContent = `${temperature}°C`;
-      conditionEl.innerHTML = `${weatherInfo.icon} ${weatherInfo.label}`;
-      currentWeatherEl.textContent = `Weather: ${weatherInfo.icon} ${weatherInfo.label}`;
+      currentTempEl.textContent = `${rainAmount} mm`;
+      conditionEl.textContent = 'Current rain amount';
+      currentWeatherEl.textContent = `Precipitation: ${precipitationAmount} mm`;
       currentRainEl.textContent = `Rain: ${rainAmount} mm`;
-      currentCloudEl.textContent = `Cloud cover: ${cloudCover}%`;
+      currentCloudEl.textContent = `Precipitation: ${precipitationAmount} mm`;
       currentTimeEl.textContent = `Time: ${formatTime(current.time)}`;
 
       const forecastCards = (hourly.time || []).slice(0, 6).map((time, index) => {
-        const hourWeatherCode = hourly.weather_code?.[index];
-        const hourWeather = getWeatherLabel(hourWeatherCode);
-        const hourRain = hourly.precipitation?.[index] ?? 0;
-        const hourCloudCover = Math.round(hourly.cloud_cover?.[index] ?? 0);
-        const hourTemp = Math.round(hourly.temperature_2m?.[index] ?? 0);
+        const hourPrecipitation = hourly.precipitation?.[index] ?? 0;
 
         return `
           <div class="weather-item">
             <strong>${formatTime(time)}</strong>
-            <div class="muted">${hourWeather.icon} ${hourWeather.label}</div>
-            <div class="muted">${hourTemp}°C</div>
-            <div class="muted">Rain: ${Math.round(hourRain * 10) / 10} mm</div>
-            <div class="muted">Cloud: ${hourCloudCover}%</div>
+            <div class="muted">Precipitation: ${Math.round(hourPrecipitation * 10) / 10} mm</div>
           </div>
         `;
       }).join('');
@@ -621,7 +590,7 @@
         `;
       }).join('');
 
-      rainSummaryEl.innerHTML = `Weather: ${weatherInfo.icon} ${weatherInfo.label} • Rain: ${rainAmount} mm • Cloud cover: ${cloudCover}%`;
+      rainSummaryEl.innerHTML = `Rain: ${rainAmount} mm • Precipitation: ${precipitationAmount} mm`;
       statusEl.textContent = 'Weather data loaded successfully.';
     } catch (error) {
       statusEl.textContent = error.message || 'Something went wrong.';

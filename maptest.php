@@ -109,6 +109,6 @@
     }
   </script>
 
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0l9eHd6W2hsZpv4ddvLfaSS55JLt7c7M&callback=initMap"></script>
+  <script async defer src="./api.php?callback=initMap"></script>
 </body>
 </html>
