@@ -364,6 +364,28 @@ function editLocation(id, name, lat, lng, elevation, builtSpan, garbageAccommoda
     }
 }
 
+function handleEditLocationButtonClick(button) {
+    if (!button || !button.dataset || !button.dataset.location) {
+        return;
+    }
+
+    var locationData;
+
+    try {
+        locationData = JSON.parse(button.dataset.location);
+    } catch (error) {
+        showToast('Unable to load location data for editing.', 'error');
+        return;
+    }
+
+    if (!Array.isArray(locationData)) {
+        showToast('Unable to load location data for editing.', 'error');
+        return;
+    }
+
+    editLocation.apply(null, locationData);
+}
+
 window.initMap = initMap;
 window.editLocation = editLocation;
 
@@ -570,6 +592,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    document.addEventListener('click', function(event) {
+        var editButton = event.target && event.target.closest ? event.target.closest('.row-btn.edit') : null;
+
+        if (!editButton) {
+            return;
+        }
+
+        handleEditLocationButtonClick(editButton);
+    });
 });
 
 function openElevationSlopeModal() {

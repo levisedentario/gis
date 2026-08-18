@@ -559,36 +559,36 @@ $mitigationMeasures = fetchMitigationMeasures($conn);
                                                     class="row-btn edit"
                                                     type="button"
                                                     id="edit-location-<?= (int) $row['id'] ?>"
-                                                    onclick="editLocation(
-                                            '<?= $row['id'] ?>',
-                                            '<?= htmlspecialchars($row['location_name'], ENT_QUOTES) ?>',
-                                            '<?= $row['latitude'] ?>',
-                                            '<?= $row['longitude'] ?>',
-                                            '<?= htmlspecialchars((string) ($row['elevation'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['built_span'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['garbage_accommodation'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['building_density'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['drainage_obstruction'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['drainage_conveyance'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['vegetation_cover'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['structural_condition'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['recommendation'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['hydraulic_capacity'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['impervious'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['infiltration_capacity'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['soil_type'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['structure_type'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['dimensions'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['shape'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['manning_n'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['material'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['slope'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['weather_data_source'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['weather_input'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['rain_intensity'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['rain_intensity_unit'] ?? ''), ENT_QUOTES) ?>',
-                                            '<?= htmlspecialchars((string) ($row['precipitation_probability'] ?? ''), ENT_QUOTES) ?>'
-                                            )">
+                                                    data-location='<?= htmlspecialchars(json_encode([
+                                                        (string) $row['id'],
+                                                        (string) $row['location_name'],
+                                                        (string) $row['latitude'],
+                                                        (string) $row['longitude'],
+                                                        (string) ($row['elevation'] ?? ''),
+                                                        (string) ($row['built_span'] ?? ''),
+                                                        (string) ($row['garbage_accommodation'] ?? ''),
+                                                        (string) ($row['building_density'] ?? ''),
+                                                        (string) ($row['drainage_obstruction'] ?? ''),
+                                                        (string) ($row['drainage_conveyance'] ?? ''),
+                                                        (string) ($row['vegetation_cover'] ?? ''),
+                                                        (string) ($row['structural_condition'] ?? ''),
+                                                        (string) ($row['recommendation'] ?? ''),
+                                                        (string) ($row['hydraulic_capacity'] ?? ''),
+                                                        (string) ($row['impervious'] ?? ''),
+                                                        (string) ($row['infiltration_capacity'] ?? ''),
+                                                        (string) ($row['soil_type'] ?? ''),
+                                                        (string) ($row['structure_type'] ?? ''),
+                                                        (string) ($row['dimensions'] ?? ''),
+                                                        (string) ($row['shape'] ?? ''),
+                                                        (string) ($row['manning_n'] ?? ''),
+                                                        (string) ($row['material'] ?? ''),
+                                                        (string) ($row['slope'] ?? ''),
+                                                        (string) ($row['weather_data_source'] ?? ''),
+                                                        (string) ($row['weather_input'] ?? ''),
+                                                        (string) ($row['rain_intensity'] ?? ''),
+                                                        (string) ($row['rain_intensity_unit'] ?? ''),
+                                                        (string) ($row['precipitation_probability'] ?? '')
+                                                    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), ENT_QUOTES, 'UTF-8') ?>'>
                                                     Edit
                                                 </button>
 
