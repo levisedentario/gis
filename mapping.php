@@ -98,15 +98,15 @@
       <?php
       $maps = [
         [
-          'title' => 'QGIS Mapping',
+          'title' => 'Target Area Mapping',
           'description' => 'Simple reference view with a clean border layout and the study area context.',
-          'link' => 'qgis/MappingDeca/index.php',
+          'link' => 'qgis/targetarea/index.php',
           'button' => 'Open Mapping Map'
         ],
         [
-          'title' => 'Map Option 05',
+          'title' => 'Map Elevation & Slope',
           'description' => 'Replace this title, description, and link when you add a new mapping view.',
-          'link' => '#',
+          'link' => 'qgis/elevation_ta/index.php',
           'button' => 'Open Map Option 05'
         ],
         [

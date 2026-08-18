@@ -22,42 +22,6 @@
         #map {
             position: relative;
         }
-        .phase-toolbar {
-            position: absolute;
-            top: 50%;
-            right: 14px;
-            transform: translateY(-50%);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .phase-option {
-            display: block;
-            border: 1px solid rgba(15, 23, 42, 0.12);
-            border-radius: 999px;
-            background: rgba(255,255,255,0.95);
-            color: #0f172a;
-            padding: 6px 10px;
-            text-align: center;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.16);
-            min-width: 44px;
-            text-decoration: none;
-        }
-        .phase-option:hover {
-            background: #e5eefc;
-        }
-        .phase-option.active {
-            background: #2563eb;
-            color: #fff;
-        }
-        .phase-option.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
         .area-info-button {
             width: 42px;
             height: 42px;
@@ -109,6 +73,22 @@
             font-size: 13px;
             line-height: 1.55;
         }
+        .area-info-guide {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            margin: 0 0 14px;
+            font-size: 12px;
+            line-height: 1.45;
+            color: #0f172a;
+            background: #f8fafc;
+            border: 1px solid #dbe4ee;
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+        .area-info-guide i {
+            color: #0f766e;
+        }
         .area-live-button {
             width: 100%;
             border: 0;
@@ -122,18 +102,64 @@
         .area-live-button:hover {
             background: #115e59;
         }
+        .area-help-control {
+            background: transparent;
+            box-shadow: none;
+        }
+        .area-help-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            width: 280px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #172033;
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            font-family: Arial, sans-serif;
+            backdrop-filter: blur(6px);
+        }
+        .area-help-icon {
+            flex: 0 0 34px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #0f766e;
+            color: #fff;
+            box-shadow: 0 6px 14px rgba(15, 118, 110, 0.26);
+            font-size: 16px;
+        }
+        .area-help-copy {
+            min-width: 0;
+        }
+        .area-help-copy h2 {
+            margin: 0 0 4px;
+            font-size: 14px;
+            line-height: 1.2;
+        }
+        .area-help-copy p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.45;
+            color: #334155;
+        }
         @media (max-width: 480px) {
             .area-info-card {
                 width: min(250px, calc(100vw - 92px));
+            }
+            .area-help-card {
+                width: min(280px, calc(100vw - 92px));
             }
         }
         </style>
         <title></title>
     </head>
     <body>
-        <div id="map">
-            <?php $activePage = 'target'; include '../includes/phase_nav.php'; ?>
-        </div>
+        <div id="map"></div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script>
         <script src="js/L.Control.Layers.Tree.min.js"></script>
@@ -150,6 +176,42 @@
         <script src="data/River_3.js"></script>
         <script src="data/TargetArea_4.js"></script>
         <script>
+        // ===== CONFIGURATION: Add your weather API endpoints here =====
+        // Format: { baseUrl: "https://...", apikey: "your_key_here", lat: "latitude", lon: "longitude" }
+        const weatherApiEndpoints = [
+            {
+                baseUrl: "https://my.meteoblue.com/packages/basic-day",
+                apikey: "apikey=Be8VLcNijdqtDfZx",
+                lat: 10.245,
+                lon: 123.796
+            },
+            {
+                baseUrl: "https://my.meteoblue.com/packages/basic-day",
+                apikey: "10G4JxM5BnSEfHiq",
+                lat: 10.245,
+                lon: 123.796
+            },
+            {
+                baseUrl: "https://my.meteoblue.com/packages/basic-day",
+                apikey: "gymdWYMKhuNIS15p",
+                lat: 10.245,
+                lon: 123.796
+            },
+            {
+                baseUrl: "https://my.meteoblue.com/packages/basic-day",
+                apikey: "f5d3r69bmsNQLMt2",
+                lat: 10.245,
+                lon: 123.796
+            },
+            {
+                baseUrl: "https://my.meteoblue.com/packages/basic-day",
+                apikey: "lJeCrtzOubQiTN71",
+                lat: 10.245,
+                lon: 123.796
+            }
+        ];
+        // ============================================================
+        
         var highlightLayer;
         function highlightFeature(e) {
             highlightLayer = e.target;
@@ -488,19 +550,158 @@
         });
         bounds_group.addLayer(layer_TargetArea_4);
         map.addLayer(layer_TargetArea_4);
-        var areaInfoContent = '<section class="area-info-card" aria-label="Flood susceptibility information">' +
-            '<h2>Target Area</h2>' +
-            '<p class="area-info-risk">Flood Susceptibility: Very High</p>' +
-            '<h3>Reason:</h3>' +
-            '<ul class="area-info-list">' +
-                '<li>Elevation: Very Low</li>' +
-                '<li>Drainage Capacity: Low</li>' +
-                '<li>Rainfall: High</li>' +
-                '<li>Impervious Surface: High</li>' +
-                '<li>River Overflow: High</li>' +
-            '</ul>' +
-            '<button class="area-live-button" type="button" onclick="window.location.href=\'../../ta.php?phase=FP\'">View Possible Flooded area</button>' +
-        '</section>';
+        function escHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function getRainIntensity(precipitationAmount) {
+            if (precipitationAmount >= 50) {
+                return 'Extreme';
+            }
+            if (precipitationAmount >= 20) {
+                return 'Very Heavy';
+            }
+            if (precipitationAmount >= 10) {
+                return 'Heavy';
+            }
+            if (precipitationAmount >= 2.5) {
+                return 'Moderate';
+            }
+            if (precipitationAmount > 0) {
+                return 'Light';
+            }
+            return 'None';
+        }
+
+        function buildAreaInfoContent(payload) {
+            var title = payload && payload.title ? payload.title : 'Target Area';
+            var status = payload && payload.status ? payload.status : 'Weather data unavailable';
+            var dateText = payload && payload.dateText ? payload.dateText : 'Not available';
+            var intensityText = payload && payload.intensityText ? payload.intensityText : 'N/A';
+            var probabilityText = payload && payload.probabilityText ? payload.probabilityText : 'N/A';
+            var precipitationText = payload && payload.precipitationText ? payload.precipitationText : 'N/A';
+
+            return '<section class="area-info-card" aria-label="Target area weather information">' +
+                '<h2>' + escHtml(title) + '</h2>' +
+                '<p class="area-info-risk">Weather Situation: ' + escHtml(status) + '</p>' +
+                '<h3>Daily Forecast (Meteoblue):</h3>' +
+                '<ul class="area-info-list">' +
+                    '<li>Date: ' + escHtml(dateText) + '</li>' +
+                    '<li>Rain Intensity: ' + escHtml(intensityText) + '</li>' +
+                    '<li>Precipitation Amount: ' + escHtml(precipitationText) + '</li>' +
+                    '<li>Precipitation Probability: ' + escHtml(probabilityText) + '</li>' +
+                '</ul>' +
+                '<p class="area-info-guide"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><i class="fas fa-hand-pointer" aria-hidden="true"></i> Click marked locations on the map to view their details.</p>' +
+                '<button class="area-live-button" type="button" onclick="window.location.href=\'../../ta.php?phase=FP\'">View Possible Flooded area</button>' +
+            '</section>';
+        }
+
+        function getMetricFromCandidates(source, metricCandidates, index) {
+            if (!source) {
+                return null;
+            }
+
+            for (var i = 0; i < metricCandidates.length; i++) {
+                var key = metricCandidates[i];
+                var value = source[key];
+                if (Array.isArray(value)) {
+                    var item = value[index];
+                    if (typeof item === 'number' && !isNaN(item)) {
+                        return item;
+                    }
+                } else if (typeof value === 'number' && !isNaN(value)) {
+                    return value;
+                }
+            }
+
+            return null;
+        }
+                // API HERE with backup fallback
+        function fetchTargetAreaWeather() {
+            var tryNextApi = function(apiIndex) {
+                if (apiIndex >= weatherApiEndpoints.length) {
+                    return Promise.reject(new Error('All weather APIs failed'));
+                }
+
+                var api = weatherApiEndpoints[apiIndex];
+                var endpoint = api.baseUrl +
+                    '?apikey=' + encodeURIComponent(api.apikey) +
+                    '&lat=' + encodeURIComponent(api.lat) +
+                    '&lon=' + encodeURIComponent(api.lon) +
+                    '&asl=16' +
+                    '&format=json';
+
+                return fetch(endpoint)
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error('Weather API ' + (apiIndex + 1) + ' failed with status ' + response.status);
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (!data || !data.data_day) {
+                            throw new Error('Weather API ' + (apiIndex + 1) + ' returned an invalid payload');
+                        }
+
+                        var day = data.data_day;
+                        var idx = 0;
+                        var forecastDate = Array.isArray(day.time) && day.time.length ? day.time[idx] : 'Not available';
+                        var precipitationAmount = getMetricFromCandidates(day, [
+                            'precipitation',
+                            'precipitation_total',
+                            'precipitation_amount',
+                            'rain',
+                            'rain_sum',
+                            'totalprecipitation'
+                        ], idx);
+                        var precipitationProbability = getMetricFromCandidates(day, [
+                            'precipitation_probability',
+                            'precipitation_probability_mean',
+                            'precipitation_probability_max',
+                            'rain_probability',
+                            'probability_precipitation'
+                        ], idx);
+
+                        if (precipitationAmount === null && precipitationProbability === null) {
+                            throw new Error('Required precipitation fields are missing in API ' + (apiIndex + 1) + ' response');
+                        }
+
+                        var amountValue = precipitationAmount === null ? 0 : precipitationAmount;
+                        var probabilityValue = precipitationProbability === null ? 0 : precipitationProbability;
+                        var intensity = getRainIntensity(amountValue);
+
+                        var weatherSituation = intensity === 'None'
+                            ? 'No Significant Rain Expected'
+                            : intensity + ' Rain Expected';
+
+                        return buildAreaInfoContent({
+                            title: 'Target Area',
+                            status: weatherSituation,
+                            dateText: forecastDate,
+                            intensityText: intensity,
+                            probabilityText: probabilityValue.toFixed(0) + '%',
+                            precipitationText: amountValue.toFixed(2) + ' mm'
+                        });
+                    })
+                    .catch(function(error) {
+                        console.warn('Weather API ' + (apiIndex + 1) + ' error:', error.message);
+                        // Try next API
+                        return tryNextApi(apiIndex + 1);
+                    });
+            };
+
+            return tryNextApi(0);
+        }
+
+        var areaInfoContent = buildAreaInfoContent({
+            title: 'Target Area',
+            status: 'Loading latest weather...'
+        });
         var areaInfoMarker = L.marker(layer_TargetArea_4.getBounds().getCenter(), {
             icon: L.divIcon({
                 className: 'area-info-marker',
@@ -511,6 +712,34 @@
             keyboard: true,
             title: 'Flood information'
         }).bindPopup(areaInfoContent, { maxWidth: 282, closeButton: true }).addTo(map);
+        var areaHelpControl = L.control({ position: 'topright' });
+        areaHelpControl.onAdd = function() {
+            var container = L.DomUtil.create('div', 'leaflet-bar area-help-control');
+            container.innerHTML = '' +
+                '<section class="area-help-card" aria-label="Map instructions">' +
+                    '<div class="area-help-icon" aria-hidden="true"><i class="fas fa-info"></i></div>' +
+                    '<div class="area-help-copy">' +
+                        '<h2>What to click</h2>' +
+                        '<p>Click the yellow info marker to open flood details, then click the map markers to view their descriptions.</p>' +
+                    '</div>' +
+                '</section>';
+            L.DomEvent.disableClickPropagation(container);
+            L.DomEvent.disableScrollPropagation(container);
+            return container;
+        };
+        areaHelpControl.addTo(map);
+        fetchTargetAreaWeather()
+            .then(function(content) {
+                areaInfoContent = content;
+                areaInfoMarker.setPopupContent(areaInfoContent);
+            })
+            .catch(function() {
+                areaInfoContent = buildAreaInfoContent({
+                    title: 'Target Area',
+                    status: 'Unable to load weather data'
+                });
+                areaInfoMarker.setPopupContent(areaInfoContent);
+            });
         const url = {"Nominatim OSM": "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
         "France BAN": "https://api-adresse.data.gouv.fr/search/?"}
         var photonControl = L.control.photon({
